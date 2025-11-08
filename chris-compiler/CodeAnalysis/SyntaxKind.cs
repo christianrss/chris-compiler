@@ -20,6 +20,6 @@ namespace ChrisCompiler.CodeAnalysis.Syntax
         LiteralExpression,
         BinaryExpression,
         ParenthesizedExpression,
-        StringExpression,
+        StringExpression
     }
 }
