@@ -17,7 +17,7 @@ namespace ChrisCompiler.CodeAnalysis.Syntax
         StringToken,
 
         // Expressions
-        NumberExpression,
+        LiteralExpression,
         BinaryExpression,
         ParenthesizedExpression,
         StringExpression,
