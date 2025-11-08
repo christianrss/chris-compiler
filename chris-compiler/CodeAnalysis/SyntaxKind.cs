@@ -18,6 +18,7 @@ namespace ChrisCompiler.CodeAnalysis.Syntax
 
         // Expressions
         LiteralExpression,
+        UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
         StringExpression

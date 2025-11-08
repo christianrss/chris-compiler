@@ -34,14 +34,25 @@ namespace ChrisCompiler.CodeAnalysis
                 return NextToken();
 
             _Diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}> expected <{kind}>");
-            return new SyntaxToken(kind, Current.Position, null!, null);
+            return new SyntaxToken(kind, Current.Position, null, null);
         }
 
         private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
-            var left = ParsePrimaryExpression();
+            ExpressionSyntax left;
+            var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
+            if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
+            {
+                var operatorToken = NextToken();
+                var operand = ParseExpression(unaryOperatorPrecedence);
+                left = new UnaryExpressionSyntax(operatorToken, operand);
+            }
+            else
+            {
+                left = ParsePrimaryExpression();
+            }
 
-            while(true)
+            while (true)
             {
                 var precedence = Current.Kind.GetBinaryOperatorPrecedence();
                 if (precedence == 0 || precedence <= parentPrecedence)
@@ -65,14 +76,10 @@ namespace ChrisCompiler.CodeAnalysis
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
 
-            if (Current.Kind == SyntaxKind.StringToken)
-            {
-                return new StringExpressionSyntax(Current);
-            }
-
             var numberToken = MatchToken(SyntaxKind.NumberToken);
             return new LiteralExpressionSyntax(numberToken);
         }
+
         public SyntaxTree Parse()
         {
             var expression = ParseExpression();

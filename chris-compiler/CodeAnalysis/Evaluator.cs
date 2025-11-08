@@ -93,6 +93,20 @@ namespace ChrisCompiler.CodeAnalysis
             {
                 expressionTokens.Add(n.LiteralToken);
             }
+            else if (expression is UnaryExpressionSyntax u)
+            {
+                if (u.OperatorToken.Kind == SyntaxKind.PlusToken)
+                    expressionTokens.Add(u.OperatorToken);
+                /*else if (u.OperatorToken.Kind == SyntaxKind.MinusToken)
+                {
+                    expressionTokens.Add(new SyntaxToken(
+                        u.Operand.Kind, 
+                        -1,
+                        "",
+                        -(decimal)((LiteralExpressionSyntax)u.Operand).LiteralToken.Value
+                    ));
+                }*/
+            }
             else if (expression is BinaryExpressionSyntax b)
             {
                 ListExpressionTokens(b.Left, expressionTokens);
@@ -160,10 +174,57 @@ namespace ChrisCompiler.CodeAnalysis
             string eval = "";
             if (node is LiteralExpressionSyntax n)
                 eval += Convert.ToDecimal(n.LiteralToken.Value);
+
+            if (node is UnaryExpressionSyntax u)
+            {
+                var operand = EvaluateExpression(u.Operand);
+
+                if (u.OperatorToken.Kind == SyntaxKind.PlusToken)
+                    return operand;
+                else if (u.OperatorToken.Kind == SyntaxKind.MinusToken)
+                {
+                    if (operand != null)
+                    {
+                        return -Convert.ToDecimal(operand);
+                    }
+                    return null;
+                }
+                else
+                    throw new Exception($"Unexpected unary operator {u.OperatorToken.Kind}");
+            }
+
             if (node is BinaryExpressionSyntax b)
-                eval += EvaluateOperation(b);
+            {
+                var left = EvaluateExpression(b.Left);
+                var right = EvaluateExpression(b.Right);
+                switch (b.OperatorToken.Kind)
+                {
+                    case SyntaxKind.PlusToken:
+                        eval += Convert.ToDecimal(left) + Convert.ToDecimal(right);
+                        break;
+
+                    case SyntaxKind.MinusToken:
+                        eval += Convert.ToDecimal(left) - Convert.ToDecimal(right);
+                        break;
+
+                    case SyntaxKind.StarToken:
+                        eval += Convert.ToDecimal(left) * Convert.ToDecimal(right);
+                        break;
+
+                    case SyntaxKind.SlashToken:
+                        eval += Convert.ToDecimal(left) / Convert.ToDecimal(right);
+                        break;
+
+                    case SyntaxKind.PowerToken:
+                        eval += (decimal)Math.Pow(
+                            Convert.ToDouble(left),
+                            Convert.ToDouble(right)
+                        );
+                        break;
+                }
+            }
             if (node is ParenthesizedExpressionSyntax p)
-                eval += EvaluateOperation(p);
+                eval += EvaluateExpression(p.Expression);
             if (node is StringExpressionSyntax s)
                 eval += Convert.ToString(s.StringToken.Value);
 
