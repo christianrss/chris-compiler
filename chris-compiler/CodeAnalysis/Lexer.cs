@@ -89,24 +89,20 @@ namespace ChrisCompiler.CodeAnalysis
 
         public SyntaxToken? OperatorTokenize()
         {
-            if (Current == '+')
-                return new SyntaxToken(SyntaxKind.PlusToken, Position++, "+", null);
-            if (Current == '-')
-                return new SyntaxToken(SyntaxKind.MinusToken, Position++, "-", null);
-            if (Current == '*')
-                return new SyntaxToken(SyntaxKind.StarToken, Position++, "*", null);
-            if (Current == '/')
-                return new SyntaxToken(SyntaxKind.SlashToken, Position++, "/", null);
-            if (Current == '^')
-                return new SyntaxToken(SyntaxKind.PowerToken, Position++, "^", null);
-            if (Current == '(')
-                return new SyntaxToken(SyntaxKind.OpenParenthesisToken, Position++, "(", null);
-            if (Current == ')')
-                return new SyntaxToken(SyntaxKind.CloseParenthesisToken, Position++, ")", null);
-            return null;
+            return Current switch
+            {
+                '+' => new SyntaxToken(SyntaxKind.PlusToken, Position++, "+", null),
+                '-' => new SyntaxToken(SyntaxKind.MinusToken, Position++, "-", null),
+                '*' => new SyntaxToken(SyntaxKind.StarToken, Position++, "*", null),
+                '/' => new SyntaxToken(SyntaxKind.SlashToken, Position++, "/", null),
+                '^' => new SyntaxToken(SyntaxKind.PowerToken, Position++, "^", null),
+                '(' => new SyntaxToken(SyntaxKind.OpenParenthesisToken, Position++, "(", null),
+                ')' => new SyntaxToken(SyntaxKind.CloseParenthesisToken, Position++, ")", null),
+                _ => null
+            };
         }
 
-        public SyntaxToken NextToken()
+        public SyntaxToken Lex()
         {
             if (Position >= Text.Length)
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, Position, "\0");

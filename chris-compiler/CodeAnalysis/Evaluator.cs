@@ -91,7 +91,7 @@ namespace ChrisCompiler.CodeAnalysis
         {
             if (expression is LiteralExpressionSyntax n)
             {
-                expressionTokens.Add(n.NumberToken);
+                expressionTokens.Add(n.LiteralToken);
             }
             else if (expression is BinaryExpressionSyntax b)
             {
@@ -159,7 +159,7 @@ namespace ChrisCompiler.CodeAnalysis
         {
             string eval = "";
             if (node is LiteralExpressionSyntax n)
-                eval += Convert.ToDecimal(n.NumberToken.Value);
+                eval += Convert.ToDecimal(n.LiteralToken.Value);
             if (node is BinaryExpressionSyntax b)
                 eval += EvaluateOperation(b);
             if (node is ParenthesizedExpressionSyntax p)

@@ -17,8 +17,8 @@ namespace ChrisCompiler.CodeAnalysis.Syntax
         {
             if (Kind == SyntaxKind.PlusToken
                 || Kind == SyntaxKind.MinusToken
-                || Kind == SyntaxKind.MultiplyToken
-                || Kind == SyntaxKind.DivideToken
+                || Kind == SyntaxKind.StarToken
+                || Kind == SyntaxKind.SlashToken
                 || Kind == SyntaxKind.PowerToken)
             {
                 return true;
