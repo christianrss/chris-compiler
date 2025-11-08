@@ -2,7 +2,7 @@ using ChrisCompiler.CodeAnalysis.Syntax;
 
 namespace ChrisCompiler.CodeAnalysis
 {
-    class Evaluator
+    public sealed class Evaluator
     {
         private readonly ExpressionSyntax _root;
         public Evaluator(ExpressionSyntax root)
@@ -22,7 +22,7 @@ namespace ChrisCompiler.CodeAnalysis
             {
                 return 0;
             }
-            else if (op.Kind == SyntaxKind.MultiplyToken || op.Kind == SyntaxKind.DivideToken)
+            else if (op.Kind == SyntaxKind.StarToken || op.Kind == SyntaxKind.SlashToken)
             {
                 return 1;
             }
@@ -68,11 +68,11 @@ namespace ChrisCompiler.CodeAnalysis
                     value = Convert.ToDecimal(left.Value) - Convert.ToDecimal(right.Value);
                     break;
 
-                case SyntaxKind.MultiplyToken:
+                case SyntaxKind.StarToken:
                     value = Convert.ToDecimal(left.Value) * Convert.ToDecimal(right.Value);
                     break;
 
-                case SyntaxKind.DivideToken:
+                case SyntaxKind.SlashToken:
                     value = Convert.ToDecimal(left.Value) / Convert.ToDecimal(right.Value);
                     break;
 
@@ -89,7 +89,7 @@ namespace ChrisCompiler.CodeAnalysis
 
         public void ListExpressionTokens(ExpressionSyntax expression, List<SyntaxToken> expressionTokens)
         {
-            if (expression is NumberExpressionSyntax n)
+            if (expression is LiteralExpressionSyntax n)
             {
                 expressionTokens.Add(n.NumberToken);
             }
@@ -158,7 +158,7 @@ namespace ChrisCompiler.CodeAnalysis
         private object? EvaluateExpression(ExpressionSyntax node)
         {
             string eval = "";
-            if (node is NumberExpressionSyntax n)
+            if (node is LiteralExpressionSyntax n)
                 eval += Convert.ToDecimal(n.NumberToken.Value);
             if (node is BinaryExpressionSyntax b)
                 eval += EvaluateOperation(b);

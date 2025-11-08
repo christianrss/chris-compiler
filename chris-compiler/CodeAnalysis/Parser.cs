@@ -2,7 +2,7 @@ using ChrisCompiler.CodeAnalysis.Syntax;
 
 namespace ChrisCompiler.CodeAnalysis
 {
-    public class Parser
+    internal sealed class Parser
     {
         public string Text { get; }
         private List<string> _Diagnostics = new List<string>();
@@ -28,7 +28,7 @@ namespace ChrisCompiler.CodeAnalysis
             _Diagnostics.AddRange(lexer.Diagnostics);
         }
 
-        private SyntaxToken Match(SyntaxKind kind)
+        private SyntaxToken MatchToken(SyntaxKind kind)
         {
             if (Current.Kind == kind)
                 return NextToken();
@@ -68,7 +68,7 @@ namespace ChrisCompiler.CodeAnalysis
             {
                 var left = NextToken();
                 var expression = ParseExpression();
-                var right = Match(SyntaxKind.CloseParenthesisToken);
+                var right = MatchToken(SyntaxKind.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
 
@@ -77,20 +77,19 @@ namespace ChrisCompiler.CodeAnalysis
                 return new StringExpressionSyntax(Current);
             }
 
-            var numberToken = Match(SyntaxKind.NumberToken);
-            return new NumberExpressionSyntax(numberToken);
+            var numberToken = MatchToken(SyntaxKind.NumberToken);
+            return new LiteralExpressionSyntax(numberToken);
+        }
+        public SyntaxTree Parse()
+        {
+            var expression = ParseExpression();
+            var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
+            return new SyntaxTree(_Diagnostics, expression, endOfFileToken);
         }
 
         private ExpressionSyntax ParseExpression()
         {
             return ParseTerm();
-        }
-
-        public SyntaxTree Parse()
-        {
-            var expression = ParseTerm();
-            var endOfFileToken = Match(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(_Diagnostics, expression, endOfFileToken);
         }
 
         /*public string Parse()

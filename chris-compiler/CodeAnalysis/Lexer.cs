@@ -3,7 +3,7 @@ using ChrisCompiler.CodeAnalysis.Syntax;
 
 namespace ChrisCompiler.CodeAnalysis
 {
-    public class Lexer
+    internal sealed class Lexer
     {
         private readonly string Text;
         private int Position;
@@ -94,9 +94,9 @@ namespace ChrisCompiler.CodeAnalysis
             if (Current == '-')
                 return new SyntaxToken(SyntaxKind.MinusToken, Position++, "-", null);
             if (Current == '*')
-                return new SyntaxToken(SyntaxKind.MultiplyToken, Position++, "*", null);
+                return new SyntaxToken(SyntaxKind.StarToken, Position++, "*", null);
             if (Current == '/')
-                return new SyntaxToken(SyntaxKind.DivideToken, Position++, "/", null);
+                return new SyntaxToken(SyntaxKind.SlashToken, Position++, "/", null);
             if (Current == '^')
                 return new SyntaxToken(SyntaxKind.PowerToken, Position++, "^", null);
             if (Current == '(')

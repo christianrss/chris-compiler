@@ -2,7 +2,7 @@ using ChrisCompiler.CodeAnalysis.Syntax;
 
 namespace ChrisCompiler.CodeAnalysis.Syntax
 {
-    sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
+    public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
     {
         public ParenthesizedExpressionSyntax(SyntaxToken openParenthesisToken, ExpressionSyntax expression, SyntaxToken closeParenthesisToken)
         {
